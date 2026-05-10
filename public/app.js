@@ -113,15 +113,23 @@
       await navigator.clipboard.writeText(els.resultUrl.value);
       els.btnCopy.textContent = 'Copied ✓';
       setTimeout(() => (els.btnCopy.textContent = 'Copy'), 1500);
-    } catch (_) {
-      els.resultUrl.focus();
-      els.resultUrl.select();
-      try {
-        document.execCommand('copy');
-      } catch (_) {}
-      els.btnCopy.textContent = 'Copied ✓';
-      setTimeout(() => (els.btnCopy.textContent = 'Copy'), 1500);
+      return;
+    } catch (err) {
+      // Modern clipboard API can fail under restricted permissions (no user
+      // gesture, insecure context, denied). Fall back to the legacy path.
+      console.warn('clipboard.writeText failed, falling back:', err);
     }
+
+    els.resultUrl.focus();
+    els.resultUrl.select();
+    try {
+      document.execCommand('copy');
+      els.btnCopy.textContent = 'Copied ✓';
+    } catch (err) {
+      console.warn('execCommand copy failed:', err);
+      els.btnCopy.textContent = 'Copy failed — select & ⌘C';
+    }
+    setTimeout(() => (els.btnCopy.textContent = 'Copy'), 1500);
   }
 
   function reset() {

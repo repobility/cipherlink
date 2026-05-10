@@ -82,7 +82,8 @@
     let meta;
     try {
       meta = await peek(parsed.id);
-    } catch (_) {
+    } catch (err) {
+      console.warn('peek failed:', err);
       showError('Network error', 'Could not reach the server. Try again.');
       return;
     }
@@ -159,8 +160,13 @@
       await navigator.clipboard.writeText(els.plaintext.textContent);
       els.btnCopySecret.textContent = 'Copied ✓';
       setTimeout(() => (els.btnCopySecret.textContent = 'Copy to clipboard'), 1500);
-    } catch (_) {
-      // Best effort; the secret is on screen anyway.
+    } catch (err) {
+      // Best effort — clipboard write can fail without a user gesture or
+      // outside a secure context. The secret is on screen for the user to
+      // select manually; we just surface that fallback.
+      console.warn('copySecret failed:', err);
+      els.btnCopySecret.textContent = 'Copy failed — select & ⌘C';
+      setTimeout(() => (els.btnCopySecret.textContent = 'Copy to clipboard'), 1800);
     }
   }
 

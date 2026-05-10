@@ -1,0 +1,106 @@
+# Repobility access matrix — Cipherlink
+# https://repobility.com/docs/access-matrix
+#
+# Authorization model: capability URL. Each secret is reachable via a URL
+# of the form:
+#
+#     https://host/s/<id>#k=<urlsafe-base64-key>
+#
+# - `id`  is 16 random bytes (~128-bit search space). It is the database key.
+# - `k`   is a 32-byte symmetric key, generated in the browser, that lives
+#         in the URL fragment. Browsers never send fragments in HTTP requests,
+#         so the server never sees the key — even in its own logs.
+#
+# Possession of the full URL is the credential. There is no user table, no
+# session, no role. Once a recipient fetches the secret, the server copy is
+# atomically destroyed (one-time read; configurable up to 100 reads).
+#
+# This documents the model for Repobility so the AUC003 "object-level route
+# lacks visible authorization" finding can be tied to an explicit design
+# choice rather than read as missing auth-by-mistake.
+
+version: 1
+
+roles:
+  capability_holder:
+    description: |
+      Any client that possesses the secret's URL. The URL contains both the
+      path id (server-known) and the fragment key (server-blind). Without
+      the fragment key the holder can fetch the ciphertext but cannot
+      decrypt it.
+
+endpoints:
+  - method: GET
+    path: /
+    role: anonymous
+    description: Static SPA shell (compose view).
+    protection: none
+
+  - method: GET
+    path: /s/:id
+    role: anonymous
+    description: SPA shell for the viewer page. The id is resolved client-side and the fragment key never reaches the server.
+    protection: capability_url, regex_validate_id_client_side
+
+  - method: GET
+    path: /healthz
+    role: anonymous
+    description: Liveness probe; returns counter of stored records, no secret content.
+    protection: none
+
+  - method: GET
+    path: /vendor/nacl/nacl.min.js
+    role: anonymous
+    description: Pinned TweetNaCl library, served from node_modules.
+    protection: none
+
+  - method: GET
+    path: /vendor/nacl/nacl-util.min.js
+    role: anonymous
+    description: Pinned TweetNaCl util library.
+    protection: none
+
+  - method: POST
+    path: /api/secrets
+    role: anonymous
+    description: Submit a ciphertext + nonce; receive an unguessable id.
+    protection: regex_validate_payload, max_ciphertext_size, max_ttl, max_reads
+    asserted_by: tests/server.test.js, tests/auth.test.js
+
+  - method: GET
+    path: /api/secrets/:id
+    role: capability_holder
+    description: Fetch the stored ciphertext + nonce by id. Atomically decrements the read counter; reaching zero deletes the record.
+    protection: capability_url, atomic_read_consumption
+    asserted_by: tests/auth.test.js (AUTH-02, AUTH-04)
+
+  - method: GET
+    path: /api/secrets/:id/meta
+    role: capability_holder
+    description: Non-consuming peek at expiry + remaining reads. Used by the viewer page to show a confirm dialog before consuming.
+    protection: capability_url
+    asserted_by: tests/auth.test.js (AUTH-05)
+
+non_goals:
+  - No server-side user accounts, sessions, or password authentication.
+  - No admin or super_admin role. The relay has no privileged operations a client could be granted.
+  - No DELETE, no edit, no list — the URL holder cannot retract or modify a secret once posted (records die by being read or expiring).
+  - No persistent message storage. Records live only in memory; restart clears the store.
+  - No analytics, no read receipts. The creator cannot learn whether their secret was read.
+
+asserted_by:
+  - tests/auth.test.js
+  - tests/server.test.js
+  - tests/crypto.test.js
+
+cwe_references:
+  - CWE-285  # Improper Authorization — addressed via capability URL
+  - CWE-359  # Exposure of Private Personal Information — keys never leave browser
+  - CWE-345  # Insufficient Verification of Data Authenticity — Poly1305 MAC
+  - CWE-330  # Use of Insufficiently Random Values — 16-byte ids from CSPRNG, 32-byte keys from nacl.randomBytes
+
+owasp_references:
+  - A01:2021  # Broken Access Control — mapped via endpoints table
+  - A02:2021  # Cryptographic Failures — XSalsa20 + Poly1305
+  - A04:2021  # Insecure Design — capability-URL is explicit, documented design
+  - A07:2021  # Identification & Authentication — no shared secrets needed; possession of URL is the credential

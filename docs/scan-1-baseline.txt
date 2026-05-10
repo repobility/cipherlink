@@ -1,0 +1,67 @@
+============================================================
+Repobility unified scan #1 — BASELINE (commit a0c0a25 initial)
+============================================================
+Repo:        https://github.com/repobility/cipherlink
+Public URL:  https://repobility.com/scan/dd0b485d-ecd4-4414-b859-c20a788b55c8/
+Started:     2026-05-10T22:30:35+03:00 (epoch 1778436635.203)
+Finished:    2026-05-10T22:32:48+03:00 (epoch 1778436767.725)
+Duration:    94.481 s   (Repobility quoted "60–120 s")
+
+Combined:    65.4 / 100
+Legacy:      69 / 100   (13 findings)
+9-layer:     62 / 100   (77.8% cov · 12 gaps)
+Critical:    0
+High:        3
+Medium:      8
+Low:         9
+Info:        5
+
+Layer breakdown
+  Quality 10 · Security 8 · Frontend 2 · Software 1 · CI/CD 1 · Api 3
+
+AI synopsis (auto-generated)
+  "Repository scanned at 62.0/100 with 77.8% coverage. It contains 48 nodes
+   across 7 cross-layer flows, written primarily in mixed languages. Engine
+   surfaced 12 findings — concentrated in security (4), api (3), frontend (2).
+   Risk profile is low: 0 critical, 0 high, 3 medium. Recommended next step:
+   open the security layer findings first — that's where the highest-impact
+   wins live."
+
+HIGH severity (3)
+-----------------
+  [AUC003] Object-level route lacks visible authorization
+           GET /api/secrets/:id           (server.js:101)
+  [AUC003] Object-level route lacks visible authorization
+           GET /api/secrets/:id/meta      (server.js:132)
+  No test files found (testing)
+
+MEDIUM severity (8)
+-------------------
+  [AUC001] No Repobility access matrix policy found
+  [ERR002] Empty catch block in public/app.js:121
+  No CI/CD configuration found
+  Public web app has no Content Security Policy (index.html)
+  Public web service has no security.txt (.well-known/security.txt)
+  9-layer · No auth library detected
+  9-layer · No CI/CD pipelines detected
+  9-layer · Very low test-to-source ratio (0 tests for 4 source files)
+
+LOW severity (9)
+----------------
+  [AUC005] No authorization-focused tests detected
+  Public docs site has no llms.txt
+  Public web app has no humans.txt
+  Public web app has no robots.txt
+  Public web app has no sitemap
+  9-layer · Stray console.log in TS/JS — server.js:97 (fq.console-leak)
+  9-layer · Unused endpoint: GET /s/:id
+  9-layer · Unused endpoint: GET /vendor/nacl/nacl-util.min.js
+  9-layer · Unused endpoint: GET /vendor/nacl/nacl.min.js
+
+INFO severity (5)
+-----------------
+  dependency-cruiser not installed — Repobility scanner host limitation
+  Gitleaks not installed — Repobility scanner host limitation
+  Semgrep not installed — Repobility scanner host limitation
+  Trivy not installed — Repobility scanner host limitation
+  No frontend routes/components detected — pure DOM, not a SPA framework

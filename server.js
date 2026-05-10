@@ -17,7 +17,8 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 
 const MAX_CIPHERTEXT_BYTES = 128 * 1024; // 128 KiB after base64 expansion
-const MAX_NONCE_LEN = 32;
+const NONCE_BASE64_LEN = 32; // 24 raw bytes encodes to exactly 32 base64 chars
+const MIN_CIPHERTEXT_BASE64_LEN = 24; // NaCl secretbox MAC is 16 bytes, encoded
 const MAX_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const MAX_READS = 100;
 
@@ -30,10 +31,19 @@ function genId() {
   return crypto.randomBytes(16).toString('base64url');
 }
 
-function isB64(s, maxLen) {
-  if (typeof s !== 'string') return false;
-  if (s.length === 0 || s.length > maxLen) return false;
-  return /^[A-Za-z0-9+/]+={0,2}$/.test(s);
+const B64_RE = /^[A-Za-z0-9+/]+={0,2}$/;
+
+function isValidNonce(s) {
+  return typeof s === 'string' && s.length === NONCE_BASE64_LEN && B64_RE.test(s);
+}
+
+function isValidCiphertext(s) {
+  return (
+    typeof s === 'string' &&
+    s.length >= MIN_CIPHERTEXT_BASE64_LEN &&
+    s.length <= MAX_CIPHERTEXT_BYTES &&
+    B64_RE.test(s)
+  );
 }
 
 function sweep() {
@@ -65,10 +75,10 @@ app.get('/healthz', (req, res) => {
 app.post('/api/secrets', (req, res) => {
   const { ciphertext, nonce, ttlSeconds, maxReads } = req.body || {};
 
-  if (!isB64(ciphertext, MAX_CIPHERTEXT_BYTES)) {
+  if (!isValidCiphertext(ciphertext)) {
     return res.status(400).json({ error: 'invalid_ciphertext' });
   }
-  if (!isB64(nonce, MAX_NONCE_LEN)) {
+  if (!isValidNonce(nonce)) {
     return res.status(400).json({ error: 'invalid_nonce' });
   }
 
