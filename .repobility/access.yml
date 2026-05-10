@@ -39,6 +39,9 @@ endpoints:
   - method: GET
     path: /s/:id
     role: anonymous
+    scope: capability_url
+    owner: capability_holder
+    tenant: none
     description: SPA shell for the viewer page. The id is resolved client-side and the fragment key never reaches the server.
     protection: capability_url, regex_validate_id_client_side
 
@@ -70,6 +73,9 @@ endpoints:
   - method: GET
     path: /api/secrets/:id
     role: capability_holder
+    scope: capability_url
+    owner: capability_holder
+    tenant: none
     description: Fetch the stored ciphertext + nonce by id. Atomically decrements the read counter; reaching zero deletes the record.
     protection: capability_url, atomic_read_consumption
     asserted_by: tests/auth.test.js (AUTH-02, AUTH-04)
@@ -77,6 +83,9 @@ endpoints:
   - method: GET
     path: /api/secrets/:id/meta
     role: capability_holder
+    scope: capability_url
+    owner: capability_holder
+    tenant: none
     description: Non-consuming peek at expiry + remaining reads. Used by the viewer page to show a confirm dialog before consuming.
     protection: capability_url
     asserted_by: tests/auth.test.js (AUTH-05)
