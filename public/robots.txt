@@ -1,0 +1,15 @@
+# Cipherlink — robots policy
+#
+# This is an interactive single-page app for sharing one-time secrets, not
+# a content site. There is nothing here for crawlers to index — every secret
+# is keyed by an unguessable id and only readable with the matching URL.
+
+User-agent: *
+Disallow: /api/
+Disallow: /s/
+Disallow: /healthz
+Disallow: /vendor/
+
+Allow: /$
+
+Sitemap: /sitemap.xml

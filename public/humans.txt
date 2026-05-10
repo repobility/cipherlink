@@ -1,0 +1,21 @@
+/* TEAM */
+
+  Lead developer: Mohammed Aljefairi
+  Site:           https://github.com/repobility
+  Location:       —
+
+  AI pair-programming: Claude (Anthropic), via Claude Code
+
+/* SITE */
+
+  Last update:  2026/05/10
+  Standards:    HTML5, CSS3, ES2022, Web Crypto, fetch
+  Cryptography: NaCl secretbox (XSalsa20 + Poly1305), 256-bit symmetric key
+  Components:   tweetnacl, express
+  Software:     Node.js 20+, any modern browser
+
+/* THANKS */
+
+  Daniel J. Bernstein and the NaCl team for the secretbox construction.
+  The TweetNaCl maintainers for the auditable JS port.
+  Yopass, PrivateBin, OneTimeSecret — prior art in this category.

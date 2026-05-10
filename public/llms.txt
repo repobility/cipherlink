@@ -1,0 +1,47 @@
+# Cipherlink
+
+> An end-to-end encrypted one-time secret-sharing service that uses a
+> capability URL as the credential. The browser generates a random key,
+> encrypts the secret with NaCl secretbox, and embeds the key in the URL
+> fragment so the server never sees it.
+
+Cipherlink is a small, auditable demonstration of how to build a
+secret-sharing tool where the server is honest-but-curious. It is
+designed to be readable end-to-end in a single sitting (~600 LOC).
+
+## Design in one sentence
+
+A 32-byte symmetric key is generated client-side, the secret is encrypted
+with `nacl.secretbox`, only the ciphertext + nonce + an unguessable id is
+posted to the server, and the key travels in the URL fragment (`#k=…`)
+which browsers never send in HTTP requests.
+
+## Documentation
+
+- [README.md](README.md): Quickstart, API surface, trust model, license.
+- [SECURITY.md](SECURITY.md): Threat model, primitive choice, intentional
+  non-goals (no DELETE, no list, no edit, no read receipts).
+- [.repobility/access.yml](.repobility/access.yml): Endpoint-by-endpoint
+  authorization matrix documenting the capability-URL model.
+
+## Source files
+
+- `server.js`: Express + an in-memory store with TTL and read-count limits.
+  Validates wire shapes, atomically consumes reads, sweeps expired records.
+- `public/crypto-utils.js`: NaCl secretbox wrapper — keygen, encrypt,
+  decrypt, base64url helpers.
+- `public/app.js`: Compose flow — encrypt, POST, build URL with fragment key.
+- `public/view.js`: Viewer flow — peek meta, confirm, consume + decrypt.
+- `public/index.html` / `public/view.html`: Strict-CSP SPA shells.
+- `tests/`: Node native test runner suites — crypto roundtrip, server
+  validation + one-time-read property, capability-URL authorization invariants.
+
+## How to run
+
+    npm install
+    npm start
+    # open http://127.0.0.1:3000
+
+## License
+
+MIT

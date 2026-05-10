@@ -58,7 +58,15 @@ setInterval(sweep, 60 * 1000).unref();
 
 const app = express();
 app.use(express.json({ limit: '256kb' }));
-app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
+
+// Static frontend. dotfiles: 'allow' so /.well-known/security.txt (RFC 9116)
+// is served alongside everything else.
+app.use(
+  express.static(path.join(__dirname, 'public'), {
+    extensions: ['html'],
+    dotfiles: 'allow',
+  }),
+);
 
 // NaCl libraries served from node_modules so the browser doesn't depend on a CDN.
 app.get('/vendor/nacl/nacl.min.js', (req, res) => {
