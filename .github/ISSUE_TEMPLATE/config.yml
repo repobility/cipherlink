@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/repobility/cipherlink/blob/main/SECURITY.md
+    about: Please do NOT open a public issue. See SECURITY.md for the private disclosure process.
+  - name: Question or discussion
+    url: https://github.com/repobility/cipherlink/discussions
+    about: Open a Discussion for questions, design ideas, and integration help.

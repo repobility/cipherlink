@@ -1,20 +1,59 @@
 {
   "name": "cipherlink",
-  "version": "0.1.0",
-  "description": "End-to-end encrypted one-time secret sharing. Server only ever holds ciphertext.",
+  "version": "1.0.0",
+  "description": "End-to-end encrypted one-time secret sharing. NaCl secretbox in the browser; server only ever holds ciphertext.",
   "private": true,
+  "license": "MIT",
+  "author": "Mohammed Aljefairi <mohammedaljefairi@gmail.com>",
+  "homepage": "https://github.com/repobility/cipherlink#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/repobility/cipherlink.git"
+  },
+  "bugs": {
+    "url": "https://github.com/repobility/cipherlink/issues"
+  },
+  "keywords": [
+    "one-time-secret",
+    "encrypted-paste",
+    "secret-sharing",
+    "yopass",
+    "privatebin",
+    "end-to-end-encryption",
+    "nacl",
+    "tweetnacl",
+    "capability-url"
+  ],
   "main": "server.js",
+  "files": [
+    "server.js",
+    "public/",
+    "README.md",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "test": "node --test \"tests/**/*.test.js\""
+    "test": "node --test \"tests/**/*.test.js\"",
+    "test:coverage": "node --test --experimental-test-coverage --test-reporter=spec \"tests/**/*.test.js\"",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "dependencies": {
     "express": "^4.21.2",
     "tweetnacl": "^1.0.3",
     "tweetnacl-util": "^0.15.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "prettier": "^3.0.0"
   }
 }

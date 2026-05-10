@@ -139,7 +139,9 @@
     els.plaintext.textContent = decoded.text;
     const ageMs = decoded.ts ? Date.now() - decoded.ts : null;
     els.postMeta.textContent = `Server copy has been destroyed${
-      body.remaining > 0 ? ` (${body.remaining} read${body.remaining === 1 ? '' : 's'} still available)` : ''
+      body.remaining > 0
+        ? ` (${body.remaining} read${body.remaining === 1 ? '' : 's'} still available)`
+        : ''
     }${ageMs != null ? ` • created ${formatAge(ageMs)} ago` : ''}.`;
 
     showOnly(els.secret);

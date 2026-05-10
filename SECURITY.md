@@ -47,9 +47,9 @@ readsRemaining }`. The key is in the URL fragment, which browsers never
 send in HTTP requests — the server cannot decrypt even with full access
 to its own request logs.
 
-What the operator *can* see:
+What the operator _can_ see:
 
-- That *a* secret existed.
+- That _a_ secret existed.
 - Its size (cipher overhead is fixed, so size ≈ plaintext size + 16-byte MAC).
 - The TTL and max-reads the creator chose.
 - When the creator posted it, when (and from what IP) the recipient
@@ -72,7 +72,7 @@ holds), but every piece of metadata is exposed.
 
 **Defended with TLS pinning of the host.** A MITM cannot decrypt without
 the URL-fragment key, and the Poly1305 MAC rejects any tampering. They
-*could* substitute their own ciphertext if they intercept the response,
+_could_ substitute their own ciphertext if they intercept the response,
 but Poly1305 verification fails the second the recipient tries to open
 it — they get "could not decrypt", not a falsified plaintext.
 
@@ -87,7 +87,7 @@ distribution channel. Specifically:
   why one-time-read is the default — once consumed, the local URL is
   worthless even if leaked.
 - **Referer header**: Cipherlink ships `<meta name="referrer"
-  content="no-referrer">` so links the recipient clicks from the view
+content="no-referrer">` so links the recipient clicks from the view
   page do not leak the URL.
 - **Server access logs**: server-side logs cannot contain the fragment
   by definition of HTTP. Cipherlink also intentionally does not log

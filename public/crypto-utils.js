@@ -69,7 +69,7 @@
     return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
   function fromUrlSafe(b64u) {
-    let s = b64u.replace(/-/g, '+').replace(/_/g, '/');
+    const s = b64u.replace(/-/g, '+').replace(/_/g, '/');
     const pad = (4 - (s.length % 4)) % 4;
     return s + '='.repeat(pad);
   }

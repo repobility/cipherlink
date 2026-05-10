@@ -86,7 +86,9 @@
     els.btnCreate.textContent = 'Encrypt & create link';
 
     if (!res.ok) {
-      showError('Server rejected the secret: ' + (body && body.error ? body.error : res.statusText));
+      showError(
+        'Server rejected the secret: ' + (body && body.error ? body.error : res.statusText),
+      );
       return;
     }
 
