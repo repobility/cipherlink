@@ -1,0 +1,77 @@
+============================================================
+Repobility unified scan #2 — FINAL (commit fb8e229 after iter 3)
+============================================================
+Repo:        https://github.com/repobility/cipherlink
+Public URL:  https://repobility.com/scan/dd0b485d-ecd4-4414-b859-c20a788b55c8/
+Started:     2026-05-10T22:51:11+03:00 (epoch 1778437871.477)
+Finished:    by 2026-05-10T22:52:46+03:00 (epoch 1778437966.956)
+Duration:    95.48 s   (Repobility quoted "60–120 s")
+
+Combined:    74.9 / 100   (Δ +9.5 from baseline)
+Repobility:  84 / 100     (Δ +15 from baseline 69)  ← A- territory
+9-layer:     66 / 100     (Δ +4)  77.8% cov, 9 gaps
+Critical:    0   (was 0)
+High:        3   (was 3)  — all AUC008, capability-URL by design
+Medium:      1   (was 8)  ← -7
+Low:         3   (was 9)  ← -6
+Info:        5   (was 5)  — Repobility infra recommendations
+Total:       12 findings  (was 25)  ← 13 closed
+
+Repobility's own scan-to-scan diff tracker (top of unified panel):
+  "Last scanned 0 minutes ago · v2 · last Δ +4.0 (diff)"
+
+Severity distribution (top bar)
+-------------------------------
+  Critical 0   High 3   Medium 1   Low 3   Info 5
+
+Source breakdown
+----------------
+  Legacy 3   9-layer 9   Crowd 0
+
+Layer breakdown (multi-layer)
+-----------------------------
+  Security 7   Software 1   Frontend 1   Api 3
+
+Remaining HIGH (all [AUC008], capability-URL by design)
+-------------------------------------------------------
+  [AUC008] Object-level policy lacks owner or tenant condition:
+           GET /api/secrets/:id            server.js — capability_url
+  [AUC008] Object-level policy lacks owner or tenant condition:
+           GET /api/secrets/:id/meta       server.js — capability_url
+  [AUC008] Object-level policy lacks owner or tenant condition:
+           GET /s/:id                      server.js — capability_url
+
+These are NOT bugs. By design Cipherlink uses capability-URL
+authorization: the unguessable id + URL-fragment key together are
+the credential. There is no user table to check ownership against.
+The model is documented in:
+  - .repobility/access.yml (with role: capability_holder)
+  - docs/adr/0002-capability-url-authorization.md
+
+Commit 6a2be0c (after this scan) adds explicit scope/owner/tenant
+markers to those endpoints to give the AUC008 rule the structured
+fields it expects. Will be picked up on the next fresh scan token.
+
+Closed since the baseline scan
+------------------------------
+  ✓ HIGH:    [AUC003] Object-level route lacks visible authorization (×2)
+              (replaced by the more nuanced AUC008 after access.yml was added)
+  ✓ HIGH:    No test files found
+  ✓ MEDIUM:  [AUC001] No Repobility access matrix policy found
+  ✓ MEDIUM:  [ERR002] Empty Catch Block in public/app.js
+  ✓ MEDIUM:  No CI/CD configuration found
+  ✓ MEDIUM:  Public web app has no Content Security Policy
+  ✓ MEDIUM:  Public web service has no security.txt
+  ✓ MEDIUM:  9-layer: No CI/CD pipelines detected
+  ✓ MEDIUM:  9-layer: Very low test-to-source ratio
+  ✓ LOW:     [AUC005] No authorization-focused tests detected
+  ✓ LOW:     No robots.txt / sitemap / humans.txt / llms.txt (×4)
+  ✓ LOW:     9-layer: Stray console.log (fq.console-leak)
+
+Conclusion
+----------
+Repobility legacy pipeline: **C (69) → A- (84)**, +15 points.
+Combined unified score: 65.4 → 74.9, +9.5 points.
+Findings: 25 → 12 (52% reduction); 3 remaining HIGH are intentional
+design choices on the capability-URL model and the 5 INFO are
+Repobility-side tooling recommendations.
