@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cipherlink — encrypted one-time secrets</title>
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <h1><span class="lock">🔐</span> Cipherlink</h1>
+        <p class="tagline">
+          Share a secret over a one-time link. The server only sees ciphertext; the decryption key
+          lives in the URL fragment and never touches our servers.
+        </p>
+      </header>
+
+      <section class="card" id="compose-card">
+        <h2>Create a one-time secret</h2>
+
+        <label for="secret">Your secret</label>
+        <textarea
+          id="secret"
+          rows="6"
+          maxlength="16000"
+          placeholder="API key, password, recovery phrase, hot take…"
+        ></textarea>
+
+        <div class="row">
+          <div>
+            <label for="ttl">Expires after</label>
+            <select id="ttl">
+              <option value="3600">1 hour</option>
+              <option value="86400" selected>24 hours</option>
+              <option value="604800">7 days</option>
+            </select>
+          </div>
+          <div>
+            <label for="max-reads">Max reads</label>
+            <select id="max-reads">
+              <option value="1" selected>1 (burn after reading)</option>
+              <option value="3">3</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="btn-create" class="primary">Encrypt &amp; create link</button>
+
+        <p class="err" id="compose-err" hidden></p>
+      </section>
+
+      <section class="card" id="result-card" hidden>
+        <h2>Your one-time link</h2>
+        <p class="muted">
+          Send this URL to the recipient. <strong>Anyone with this URL can read the secret once</strong> —
+          treat it like the secret itself.
+        </p>
+        <div class="link-row">
+          <input type="text" id="result-url" readonly />
+          <button id="btn-copy" class="primary">Copy</button>
+        </div>
+        <p class="muted small" id="result-meta"></p>
+        <button id="btn-new" class="ghost">Create another</button>
+      </section>
+
+      <footer>
+        <p class="muted small">
+          Cipher: NaCl <code>secretbox</code> (XSalsa20 + Poly1305).
+          Key: 256-bit random, generated in your browser, never sent to the server.
+          <a href="https://github.com/repobility/cipherlink">Source on GitHub</a>.
+        </p>
+      </footer>
+    </main>
+
+    <script src="/vendor/nacl/nacl.min.js"></script>
+    <script src="/vendor/nacl/nacl-util.min.js"></script>
+    <script src="/crypto-utils.js"></script>
+    <script src="/app.js"></script>
+  </body>
+</html>

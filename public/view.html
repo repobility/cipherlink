@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cipherlink — view secret</title>
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <h1><span class="lock">🔐</span> Cipherlink</h1>
+        <p class="tagline">Someone shared an encrypted one-time secret with you.</p>
+      </header>
+
+      <section class="card" id="loading-card">
+        <h2>Loading…</h2>
+        <p class="muted">Fetching the ciphertext and decrypting in your browser.</p>
+      </section>
+
+      <section class="card" id="confirm-card" hidden>
+        <h2>This is a one-time secret</h2>
+        <p class="muted">
+          Reading it now will <strong>permanently destroy</strong> the server copy. Make sure you
+          are ready to record the value before continuing.
+        </p>
+        <p class="muted small" id="confirm-meta"></p>
+        <button id="btn-reveal" class="primary">Reveal &amp; consume secret</button>
+        <button id="btn-cancel" class="ghost">Not yet</button>
+      </section>
+
+      <section class="card" id="secret-card" hidden>
+        <h2>Decrypted secret</h2>
+        <pre id="plaintext" class="plaintext" tabindex="0"></pre>
+        <div class="row">
+          <button id="btn-copy-secret" class="primary">Copy to clipboard</button>
+          <button id="btn-create-new" class="ghost">Create one of your own</button>
+        </div>
+        <p class="muted small" id="post-meta"></p>
+      </section>
+
+      <section class="card error-card" id="error-card" hidden>
+        <h2 id="error-title">Secret unavailable</h2>
+        <p class="muted" id="error-detail"></p>
+        <button id="btn-error-new" class="ghost">Create your own</button>
+      </section>
+
+      <footer>
+        <p class="muted small">
+          Cipher: NaCl <code>secretbox</code> (XSalsa20 + Poly1305).
+          <a href="https://github.com/repobility/cipherlink">Source on GitHub</a>.
+        </p>
+      </footer>
+    </main>
+
+    <script src="/vendor/nacl/nacl.min.js"></script>
+    <script src="/vendor/nacl/nacl-util.min.js"></script>
+    <script src="/crypto-utils.js"></script>
+    <script src="/view.js"></script>
+  </body>
+</html>
